@@ -1,5 +1,5 @@
 # PHP snippets
 
-- [TDD with PHPUnit.](https://github.com/bernardomais/php/tree/master/pdo-dao-singleton)
-- DAO and Singleton with PDO.
+- TDD with PHPUnit.
+- [DAO and Singleton with PDO.](https://github.com/bernardomais/php/tree/master/pdo-dao-singleton)
 - ...
