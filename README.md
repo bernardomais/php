@@ -1,5 +1,5 @@
 # PHP snippets
 
-- DAO and Singleton with PDO.
 - TDD with PHPUnit.
+- DAO and Singleton with PDO.
 - ...
