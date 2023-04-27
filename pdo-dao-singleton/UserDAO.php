@@ -54,7 +54,7 @@ class UserDAO {
 
             $p_sql->bindValue(':name', $user->getName());
             $p_sql->bindValue(':email', $user->getEmail());
-            $p_sql->bindValue(':password', $user->getPassword());
+            $p_sql->bindValue(':password', password_hash($user->getPassword(), PASSWORD_DEFAULT));
             $p_sql->bindValue(':active', $user->getActive());
             $p_sql->bindValue(':profileId', $user->getProfile()->getId());
 
@@ -149,15 +149,14 @@ class UserDAO {
     public function updatePassword($userId, $password, $newPassword) {
         try {
             $user = $this->findById($userId);
-            if ($user->getPassword() == md5(trim(strtolower($password)))) {
+            if (password_verify($password, $user->getPassword())) {
                 $sql = 'UPDATE user SET 
                         password = :newPassword 
-                        WHERE id = :userId AND password = :password';
+                        WHERE id = :userId';
                 
                 $p_sql = Connection::getInstance()->prepare($sql);
 
-                $p_sql->bindValue(':newPassword', md5(trim(strtolower($newPassword))));
-                $p_sql->bindValue(':password', md5(trim(strtolower($password))));
+                $p_sql->bindValue(':newPassword', password_hash($newPassword, PASSWORD_DEFAULT));
                 $p_sql->bindValue(':userId', $userId);
 
                 return $p_sql->execute();
