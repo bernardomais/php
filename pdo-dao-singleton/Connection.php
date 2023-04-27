@@ -10,7 +10,7 @@ class Connection {
 
     public static function getInstance() {
         if (!isset(self::$instance)) {
-            self::$instance = new PDO('mysql:host=localhost;dbname=sakila', 
+            self::$instance = new PDO('mysql:host=localhost;dbname=pdo_dao_singleton', 
                                         'root', 
                                         'toor', 
                                         array(PDO::MYSQL_ATTR_INIT_COMAND => "SET NAMES utf8"));
