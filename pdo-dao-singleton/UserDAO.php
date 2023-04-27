@@ -33,7 +33,7 @@ class UserDAO {
         }
     }
 
-    public function insert(User $user) {
+    public function add(User $user) {
         try {
             $sql = 'INSERT INTO user (
                 name, 
@@ -67,5 +67,125 @@ class UserDAO {
                                                     . ' Message: ' . $e->getMessage());
         }
 
+    }
+
+    public function update(User $user) {
+        try {
+            $sql = 'UPDATE user SET 
+                    name = :name, 
+                    email = :email,
+                    active = :active,
+                    profileId = :profileId 
+                    WHERE id = :id';
+            
+            $p_sql = Connection::getInstance()->prepare($sql);
+
+            $p_sql->bindValue(':name', $user->getName());
+            $p_sql->bindValue(':email', $user->getEmail());
+            $p_sql->bindValue(':active', $user->getActive());
+            $p_sql->bindValue(':profileId', $user->getProfile()->getId());
+            $p_sql->bindValue(':id', $user->getId());
+
+            return $p_sql->execute();
+        } catch (Exception $e) {
+            print 'An error occurred when trying to perform this action, 
+            an error Log was generated, please try again later.';
+
+            LogGenerator::getInstance()->insertLog('<<Error>> Code: ' . $e->getCode() 
+                                                    . ' Message: ' . $e->getMessage());
+        }
+    }
+
+    public function updateWithPassword(User $user) {
+        try {
+            $sql = 'UPDATE user SET 
+                    name = :name, 
+                    email = :email,
+                    password = :password, 
+                    active = :active,
+                    profileId = :profileId 
+                    WHERE id = :id';
+            
+            $p_sql = Connection::getInstance()->prepare($sql);
+
+            $p_sql->bindValue(':name', $user->getName());
+            $p_sql->bindValue(':email', $user->getEmail());
+            $p_sql->bindValue(':password', $user->getPassword());
+            $p_sql->bindValue(':active', $user->getActive());
+            $p_sql->bindValue(':profileId', $user->getProfile()->getId());
+            $p_sql->bindValue(':id', $user->getId());
+
+            return $p_sql->execute();
+        } catch (Exception $e) {
+            print 'An error occurred when trying to perform this action, 
+            an error Log was generated, please try again later.';
+
+            LogGenerator::getInstance()->insertLog('<<Error>> Code: ' . $e->getCode() 
+                                                    . ' Message: ' . $e->getMessage());
+        }
+    }
+
+    public function updatePasswordAlreadyEncrypted($userId, $newPassword) {
+        try {
+            $sql = 'UPDATE user SET 
+                    password = :newPassword 
+                    WHERE id = :userId';
+            
+            $p_sql = Connection::getInstance()->prepare($sql);
+
+            $p_sql->bindValue(':newPassword', $newPassword);
+            $p_sql->bindValue(':id', $userId);
+
+            return $p_sql->execute();
+        } catch (Exception $e) {
+            print 'An error occurred when trying to perform this action, 
+            an error Log was generated, please try again later.';
+
+            LogGenerator::getInstance()->insertLog('<<Error>> Code: ' . $e->getCode() 
+                                                    . ' Message: ' . $e->getMessage());
+        }
+    }
+
+    public function updatePassword($userId, $password, $newPassword) {
+        try {
+            $user = $this->findById($userId);
+            if ($user->getPassword() == md5(trim(strtolower($password)))) {
+                $sql = 'UPDATE user SET 
+                        password = :newPassword 
+                        WHERE id = :userId AND password = :password';
+                
+                $p_sql = Connection::getInstance()->prepare($sql);
+
+                $p_sql->bindValue(':newPassword', md5(trim(strtolower($newPassword))));
+                $p_sql->bindValue(':password', md5(trim(strtolower($password))));
+                $p_sql->bindValue(':userId', $userId);
+
+                return $p_sql->execute();
+            }
+            else
+                return false;
+        } catch(Exception $e) {
+            print 'An error occurred when trying to perform this action, 
+            an error Log was generated, please try again later.';
+
+            LogGenerator::getInstance()->insertLog('<<Error>> Code: ' . $e->getCode() 
+                                                    . ' Message: ' . $e->getMessage());
+        }
+    }
+
+    public function delete($id) {
+        try {
+            $sql = 'DELETE FROM user WHERE id = :id';
+            $p_sql = Connection::getInstance()->prepare($sql);
+            $p_sql->bindValue(':id', $id);
+
+            return $p_sql->execute();
+        } catch(Exception $e) {
+            print 'An error occurred when trying to perform this action, 
+            an error Log was generated, please try again later.';
+
+            LogGenerator::getInstance()->insertLog('<<Error>> Code: ' . $e->getCode() 
+                                                    . ' Message: ' . $e->getMessage());
+        }
     }
 }
