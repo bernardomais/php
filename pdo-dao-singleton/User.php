@@ -46,7 +46,7 @@ class User {
     }
 
     public function setActive($active) {
-        $this->active = strtolower($active);
+        $this->active = $active;
     }
 
     public function getProfile() {
