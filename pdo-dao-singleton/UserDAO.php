@@ -50,15 +50,15 @@ class UserDAO {
                 :profileId
             )';
 
-            $p_sql = Connection::getInstance()->prepare($sql);
+            $stmt = Connection::getInstance()->prepare($sql);
 
-            $p_sql->bindValue(':name', $user->getName());
-            $p_sql->bindValue(':email', $user->getEmail());
-            $p_sql->bindValue(':password', password_hash($user->getPassword(), PASSWORD_DEFAULT));
-            $p_sql->bindValue(':active', $user->getActive());
-            $p_sql->bindValue(':profileId', $user->getProfile()->getId());
+            $stmt->bindValue(':name', $user->getName());
+            $stmt->bindValue(':email', $user->getEmail());
+            $stmt->bindValue(':password', password_hash($user->getPassword(), PASSWORD_DEFAULT));
+            $stmt->bindValue(':active', $user->getActive());
+            $stmt->bindValue(':profileId', $user->getProfile()->getId());
 
-            return $p_sql->execute();
+            return $stmt->execute();
         } catch (Exception $e) {
             print 'An error occurred when trying to perform this action, 
             an error Log was generated, please try again later.';
@@ -78,15 +78,15 @@ class UserDAO {
                     profileId = :profileId 
                     WHERE id = :id';
             
-            $p_sql = Connection::getInstance()->prepare($sql);
+            $stmt = Connection::getInstance()->prepare($sql);
 
-            $p_sql->bindValue(':name', $user->getName());
-            $p_sql->bindValue(':email', $user->getEmail());
-            $p_sql->bindValue(':active', $user->getActive());
-            $p_sql->bindValue(':profileId', $user->getProfile()->getId());
-            $p_sql->bindValue(':id', $user->getId());
+            $stmt->bindValue(':name', $user->getName());
+            $stmt->bindValue(':email', $user->getEmail());
+            $stmt->bindValue(':active', $user->getActive());
+            $stmt->bindValue(':profileId', $user->getProfile()->getId());
+            $stmt->bindValue(':id', $user->getId());
 
-            return $p_sql->execute();
+            return $stmt->execute();
         } catch (Exception $e) {
             print 'An error occurred when trying to perform this action, 
             an error Log was generated, please try again later.';
@@ -106,16 +106,16 @@ class UserDAO {
                     profileId = :profileId 
                     WHERE id = :id';
             
-            $p_sql = Connection::getInstance()->prepare($sql);
+            $stmt = Connection::getInstance()->prepare($sql);
 
-            $p_sql->bindValue(':name', $user->getName());
-            $p_sql->bindValue(':email', $user->getEmail());
-            $p_sql->bindValue(':password', $user->getPassword());
-            $p_sql->bindValue(':active', $user->getActive());
-            $p_sql->bindValue(':profileId', $user->getProfile()->getId());
-            $p_sql->bindValue(':id', $user->getId());
+            $stmt->bindValue(':name', $user->getName());
+            $stmt->bindValue(':email', $user->getEmail());
+            $stmt->bindValue(':password', $user->getPassword());
+            $stmt->bindValue(':active', $user->getActive());
+            $stmt->bindValue(':profileId', $user->getProfile()->getId());
+            $stmt->bindValue(':id', $user->getId());
 
-            return $p_sql->execute();
+            return $stmt->execute();
         } catch (Exception $e) {
             print 'An error occurred when trying to perform this action, 
             an error Log was generated, please try again later.';
@@ -131,12 +131,12 @@ class UserDAO {
                     password = :newPassword 
                     WHERE id = :userId';
             
-            $p_sql = Connection::getInstance()->prepare($sql);
+            $stmt = Connection::getInstance()->prepare($sql);
 
-            $p_sql->bindValue(':newPassword', $newPassword);
-            $p_sql->bindValue(':id', $userId);
+            $stmt->bindValue(':newPassword', $newPassword);
+            $stmt->bindValue(':id', $userId);
 
-            return $p_sql->execute();
+            return $stmt->execute();
         } catch (Exception $e) {
             print 'An error occurred when trying to perform this action, 
             an error Log was generated, please try again later.';
@@ -154,12 +154,12 @@ class UserDAO {
                         password = :newPassword 
                         WHERE id = :userId';
                 
-                $p_sql = Connection::getInstance()->prepare($sql);
+                $stmt = Connection::getInstance()->prepare($sql);
 
-                $p_sql->bindValue(':newPassword', password_hash($newPassword, PASSWORD_DEFAULT));
-                $p_sql->bindValue(':userId', $userId);
+                $stmt->bindValue(':newPassword', password_hash($newPassword, PASSWORD_DEFAULT));
+                $stmt->bindValue(':userId', $userId);
 
-                return $p_sql->execute();
+                return $stmt->execute();
             }
             else
                 return false;
@@ -175,10 +175,10 @@ class UserDAO {
     public function delete($id) {
         try {
             $sql = 'DELETE FROM user WHERE id = :id';
-            $p_sql = Connection::getInstance()->prepare($sql);
-            $p_sql->bindValue(':id', $id);
+            $stmt = Connection::getInstance()->prepare($sql);
+            $stmt->bindValue(':id', $id);
 
-            return $p_sql->execute();
+            return $stmt->execute();
         } catch(Exception $e) {
             print 'An error occurred when trying to perform this action, 
             an error Log was generated, please try again later.';
@@ -191,11 +191,11 @@ class UserDAO {
     public function findById($id) {
         try {
             $sql = 'SELECT * FROM user WHERE id = :id';
-            $p_sql = Connection::getInstance()->prepare($sql);
-            $p_sql->bindValue(':id', $id);
+            $stmt = Connection::getInstance()->prepare($sql);
+            $stmt->bindValue(':id', $id);
 
-            if ($p_sql->execute())
-                return $this->bindUser($p_sql->fetch(PDO::FETCH_OBJ));
+            if ($stmt->execute())
+                return $this->bindUser($stmt->fetch(PDO::FETCH_OBJ));
             else
                 return false;
         } catch(Exception $e) {
@@ -210,11 +210,11 @@ class UserDAO {
     public function findByEmail($email) {
         try {
             $sql = 'SELECT * FROM user WHERE email = :email';
-            $p_sql = Connection::getInstance()->prepare($sql);
-            $p_sql->bindValue(':email', $email);
+            $stmt = Connection::getInstance()->prepare($sql);
+            $stmt->bindValue(':email', $email);
 
-            if ($p_sql->execute())
-                return $this->bindUser($p_sql->fetch(PDO::FETCH_OBJ));
+            if ($stmt->execute())
+                return $this->bindUser($stmt->fetch(PDO::FETCH_OBJ));
             else
                 return false;
         } catch(Exception $e) {
@@ -229,12 +229,12 @@ class UserDAO {
     public function findByEmailAndPassword($email, $password) {
         try {
             $sql = 'SELECT * FROM user WHERE email = :email AND password = :password';
-            $p_sql = Connection::getInstance()->prepare($sql);
-            $p_sql->bindValue(':email', $email);
-            $p_sql->bindValue(':password', $password);
+            $stmt = Connection::getInstance()->prepare($sql);
+            $stmt->bindValue(':email', $email);
+            $stmt->bindValue(':password', $password);
 
-            if ($p_sql->execute())
-                return $this->bindUser($p_sql->fetch(PDO::FETCH_OBJ));
+            if ($stmt->execute())
+                return $this->bindUser($stmt->fetch(PDO::FETCH_OBJ));
             else
                 return false;
         } catch(Exception $e) {
